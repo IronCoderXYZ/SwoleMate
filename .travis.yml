@@ -1,0 +1,19 @@
+sudo: required
+services:
+- docker
+before_script:
+- docker pull mitchhankins/swolemate || true
+script:
+- docker build --pull --cache-from mitchhankins/swolemate --tag mitchhankins/swolemate
+- docker run mitchhankins/swolemate
+after_script:
+- docker images
+before_deploy:
+- docker login -u "$DOCKER_EMAIL" -p "$DOCKER_PW"
+deploy:
+  provider: script
+  script: docker push mitchhankins/swolemate
+  on:
+    branch: master
+env:
+  secure: Vo/lpd0S2OBqOnWYe2IzdJCQW2sfJPjrUcYTzNsW1PZMYpenVVN3ERfL0zmSKzYDDhLo6nsoXCk0j2DDcaGw3Fmm9IJJH8/I84Xe+luJ2PAnv1i7dY9wExGc9yvrOQ6kPYYUKae7WY4Tzn/8i0xt0TWFah3kro+sQ7go2QcdQyxGeDmDHlDzB2XevxxH5IQ736muFNvxuslhfcDOl0HtZabXExduFKCj0ipCgxbtGzV+jvBHh/kzBANzl69hyGqx6HARVHcvXsKwJoG85MNBW1vYm+f7TpbdLVBpKcAYq3kRNihdONuJaB7U3FpOT9HNInuO3dulMhS8W3G/HxgB85l6uukX9wfsn5vbbPgZ1ONhayH94sMxdWId6DQ79xDcpGEDFh4p9VxVePfAgIMB+sxJXbBvEO/H/4y82wgWVf/ey/lapkM/49TiV73lep3eKkCrt/ILABCE3SwW8RPMxR6/nX0BemnTLK2DUq0tve1wzY5EsqHGBOdzDG/p6I121efjPBaqYt0vBJZcyVQqdZktFf8AZEO6z/7DP3wPL4szOW2dcDi/p12e++P5xt3bJ6NSLu3hFKIpkO9sz5VaAjAimlXfU172Zmv4RyHGH3y3UNTv1FCu7yxyJMp5O0Y4uIQvKCZikqBsrtn1mCl1cCZmu1UG/PX3ziCo3an+Egc=
