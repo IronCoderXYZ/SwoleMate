@@ -4,7 +4,7 @@ services:
 before_script:
 - docker pull mitchhankins/swolemate || true
 script:
-- docker build --pull --cache-from mitchhankins/swolemate --tag mitchhankins/swolemate
+- docker build --pull --cache-from mitchhankins/swolemate --tag mitchhankins/swolemate .
 - docker run mitchhankins/swolemate
 after_script:
 - docker images
