@@ -4,9 +4,16 @@
   "description": "SwoleMate, the ultimate lifting companion",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.js",
+    "start": "next",
     "build": "next build",
-    "start": "NODE_ENV=production node server.js"
+    "dev": "nodemon server.js",
+    "docker:build": "docker build -t swolemate .",
+    "docker:clean": "docker rm -f swolemate || true",
+    "docker:run": "docker run -it -v ${PWD}:/usr/src/app -v /usr/src/app/node_modules -p 3000:3000 swolemate && npm run docker:logs",
+    "docker:stop": "docker stop swolemate",
+    "docker:start": "docker start swolemate && npm run docker:logs",
+    "docker:logs": "docker logs -f swolemate",
+    "deploy": "npm run docker:build && npm run docker:clean && npm run docker:run"
   },
   "author": "",
   "license": "ISC",
