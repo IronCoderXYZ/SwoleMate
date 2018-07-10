@@ -2,18 +2,14 @@ sudo: required
 services:
 - docker
 before_script:
-- docker pull mitchhankins/swolemate || true
+- pip install --user awscli
+- export PATH=$PATH:$HOME/.local/bin
 script:
-- docker build --pull --cache-from mitchhankins/swolemate --tag mitchhankins/swolemate .
-- docker run mitchhankins/swolemate
-after_script:
-- docker images
-before_deploy:
-- docker login -u "$DOCKER_EMAIL" -p "$DOCKER_PW"
-deploy:
-  provider: script
-  script: docker push mitchhankins/swolemate
-  on:
-    branch: master
+- eval $(aws ecr get-login --region us-east-1)
+- docker build -t mitchhankins/swolemate .
+- docker tag mitchhankins/swolemate:latest 080024658700.dkr.ecr.us-east-1.amazonaws.com/mitchhankins/swolemate:latest
+- docker push 080024658700.dkr.ecr.us-east-1.amazonaws.com/mitchhankins/swolemate:latest
 env:
-  secure: Vo/lpd0S2OBqOnWYe2IzdJCQW2sfJPjrUcYTzNsW1PZMYpenVVN3ERfL0zmSKzYDDhLo6nsoXCk0j2DDcaGw3Fmm9IJJH8/I84Xe+luJ2PAnv1i7dY9wExGc9yvrOQ6kPYYUKae7WY4Tzn/8i0xt0TWFah3kro+sQ7go2QcdQyxGeDmDHlDzB2XevxxH5IQ736muFNvxuslhfcDOl0HtZabXExduFKCj0ipCgxbtGzV+jvBHh/kzBANzl69hyGqx6HARVHcvXsKwJoG85MNBW1vYm+f7TpbdLVBpKcAYq3kRNihdONuJaB7U3FpOT9HNInuO3dulMhS8W3G/HxgB85l6uukX9wfsn5vbbPgZ1ONhayH94sMxdWId6DQ79xDcpGEDFh4p9VxVePfAgIMB+sxJXbBvEO/H/4y82wgWVf/ey/lapkM/49TiV73lep3eKkCrt/ILABCE3SwW8RPMxR6/nX0BemnTLK2DUq0tve1wzY5EsqHGBOdzDG/p6I121efjPBaqYt0vBJZcyVQqdZktFf8AZEO6z/7DP3wPL4szOW2dcDi/p12e++P5xt3bJ6NSLu3hFKIpkO9sz5VaAjAimlXfU172Zmv4RyHGH3y3UNTv1FCu7yxyJMp5O0Y4uIQvKCZikqBsrtn1mCl1cCZmu1UG/PX3ziCo3an+Egc=
+  global:
+  - secure: oWSipKVhCwlvlXGeTb2xJYRVXw41khlorLmeYAHkVK6TaGSGApJR/hccxhWQe3WhyH+Xl383gFAtOkSNQoKgE5GKe1n55ouyfMqhilfNhWCjqelBESCngBRqiyUTHbEhrj0e+Qw6dLmlQMpQ13mJyrC5YZeWY6zIm7/T+q97RksdEG6liZCe1A6yB5xFm5NWZhkZAqB5zBegrEiviVxJ8IeK5oNX4W9NuA+oLXpJaMwNFfDRd/OOvyr5oVlTB/X442E8GJEsmNmqKvZMy8eUbDmXwUGr37J+FyNmwKiYkZC0LereFsDz/kLe21+lvTklhUXOhc/R8HmC3uAiGqP3GR4YHvoVUymSDZC/EFLKQBXTKtrIDLkBHRxPOOXFmB6FqYLB7o34xwXt+8NYZkUx2tWLJXnNSEdt4bbHiF0mYn9LDIkxBje9rDpqUr0ckfYzlOiunJfzcFbp9UFKBN1bGiNYzXRgSE4SjG0fMpPEq0gkiqsmed5SVFqCLOAFOD4JJOZjsLJfvNaeJsl9BsPZTOEGrXDzt+ShTULrtg87r6IodJsFXxWp9FP8pCZImXTOa/aWMcXt9tM5f1YS+/pzlbYM7hHHK0BAED5ZTVaN5WQczAjxdLA/zkwJKdGnp5okl/Pn8If6aHtX+9E8Mha40Sa64CIjInCsgx7hioKMP1g=
+  - secure: T3DixKR0bj/HQLk4PtudhuqwqjmtLLP8v+jjaOedyu3VbpR2YaojsexTVhP66qdgtX+om3TTrlDISIaefxzF7ys0u9DlAJPPtvPLEMkgWZ2gLq4exktGaIlWjWS6QMMdjJtqBMTuGswUm/fZW9tkxocaswTMhnc+sio6o9Gkl1EFs5uUUGq4XU7LZ3y5ofa90duw2JOZzqnabTSOZmm1TEsy3D4DaKMWre64kwEt/7b2KKznVDjvSMWELQZEQtI9YCKldSbd4uHHF1lm2LbzgNqZQkwLxDismBHvQlbeDCIQGb7LJNSpI6CvY7HD5eBUDBBeCnAZWS5S8N7X+Opmkjma76l/c1FgiU3R5K2rYPO4mbJ4jWREIr5MEUGyrUddHFPwcYEMzxQ6LbVgsQl7RiNm9rmYN66p48Y1tTfQpnz5h1yMEF4/5CR967NdeO21V5cnsQwnnGkyMd6dEUO7MfJF5ifTecCzmB09g6KCPaU/+OnnA3wIB4/FCuTi8pG1wb1yQD0zQbY7zfSL81Sa7umycPVUdfD7iw7xPlwlS+NU+hPlYskDDCvwwxxf5v8rgCqZw4hMpfzV+cAKlQBJAmBTEwyHO7mKdkSKw0IQgOhpCerltKltDQdUY9dTXnBsJiDBdioaavOlyeR1sR17lGf1hDdct5f32WTdFJvY9sA=
