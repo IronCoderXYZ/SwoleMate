@@ -5,7 +5,7 @@ before_script:
 - pip install --user awscli
 - export PATH=$PATH:$HOME/.local/bin
 script:
-- eval $(aws ecr get-login --region us-east-1)
+- eval $(aws ecr get-login --no-include-email --region us-east-1)
 - docker build -t mitchhankins/swolemate .
 - docker tag mitchhankins/swolemate:latest 080024658700.dkr.ecr.us-east-1.amazonaws.com/mitchhankins/swolemate:latest
 - docker push 080024658700.dkr.ecr.us-east-1.amazonaws.com/mitchhankins/swolemate:latest
