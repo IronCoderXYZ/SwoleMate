@@ -21,6 +21,6 @@ deploy:
   region: us-west-2
   bucket_name: swolemate
   app: SwoleMate
-  env: prod
+  env: Swolemate-dev
   on:
     repo: IronCoderXYZ/SwoleMate
